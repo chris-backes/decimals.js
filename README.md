@@ -23,7 +23,19 @@ const def = new Decimal(15.543)
 
 Methods (outlined below) are attached to the object
 
+## Properties
+
+### Val
+
+The value stored in the object, as a string
+
+### Num
+
+Get function, which returns the value stored in the object as a number
+
 ## Methods
+
+All methods which involve a mathematical operation can take a string, number, or another Decimal object
 
 ### Precision(num, round = true)
 
@@ -31,14 +43,18 @@ Precision() takes two parameters. The first is the length of the decimal value, 
 
 ### Add(num)
 ** Currently cannot handle negative values **
-Add takes one parameter: the number being added to the Decimal object. It can be a string or a number (integer or float). It returns the answer, and modifies the Decimal object value.
+Add takes one parameter: the number being added to the Decimal object. It returns the result of the operation and modifies the object.
 
 ### Subtract(num)
 ** Currently cannot handle negative values **
-Subtract takes one parameter: the number being subtracted from the Decimal object. It can be a string or a number (integer or float). It returns the difference, and modifies the Decimal object value.
+Subtract takes one parameter: the number being subtracted from the Decimal object. It returns the result of the operation and modifies the object.
 
 ### Multiply(num)
-Multiply takes one parameter: the number being multipplied with the Decimal object. It can be a string or a number (integer or float). It returns the product, and modifies the Decimal object value.
+Multiply takes one parameter: the number being multipplied with the Decimal object. It returns the result of the operation and modifies the object.
 
 ### Division
 Division currently does not work.
+
+### Power(exponent)
+** Currently on handles integers **
+Power takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.

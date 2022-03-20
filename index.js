@@ -30,9 +30,13 @@ class Decimal {
         return this.val
     }
 	add(num) {
+        if (num instanceof Decimal) {                                                   //allows access to other decimal object
+            num = num.val
+        }
 		if (typeof num !== "string") {
 			num = num.toString();
 		}
+        console.log(num)
 		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
 			throw new Error("Parameter is not a float");
 		}
@@ -64,6 +68,9 @@ class Decimal {
 		return this.val;
 	}
 	subtract(num) {
+        if (num instanceof Decimal) {
+            num = num.val
+        }
 		if (typeof num !== "string") {
 			num = num.toString();
 		}
@@ -100,6 +107,9 @@ class Decimal {
 	}
 	multiply(num) {
         let neg = false
+        if (num instanceof Decimal) {
+            num = num.val
+        }
 		if (typeof num !== "string") {                                                  //sanitizing data
 			num = num.toString();
 		}
@@ -134,6 +144,9 @@ class Decimal {
 		return this.val;
 	}
 	divide(num, prec = 5) {
+        if (num instanceof Decimal) {
+            num = num.val
+        }
 		if (typeof num !== "string") {
 			num = num.toString();
 		}
@@ -144,10 +157,45 @@ class Decimal {
 		if (num === "0") {
 			throw new Error("Cannot divide by zero");
 		}
-		let first = parseInt(this.val.split(".").join(""));
-		let second = parseInt(num.split(".").join(""));
-		let quotFront = Math.floor(first / second);
-		let quotBack = first % second;
+        let n = num.length - num.indexOf(".") - 1
+        if (num.indexOf(".") === -1) n = 0
+        num = num.replace(".", "")
+        num = parseInt(num)
+        let dividend = this.val
+        let m = dividend.length - dividend.indexOf(".")
+        if (dividend.indexOf(".") === -1) dividend = 0
+
+        console.log(num, n)
 	}
+    power(exponent) {
+        if (exponent instanceof Decimal) {
+            exponent = exponent.num
+        }
+        if (typeof exponent === "string") {
+            if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
+                throw new Error("Parameter is not a float");
+            }
+            exponent = parseInt(exponent)
+        }
+        if (typeof exponent !== "number") {
+            throw new Error("You must input a number")
+        }
+        if (exponent % 1 === 0) {
+            let base = this.val
+            let n = base.length - base.indexOf(".") - 1
+            if (base.indexOf(".") === -1) n = 0
+            base = base.replace(".", "")
+            base = parseInt(base)
+            base = base ** exponent
+            base = base.toString()
+            let m = base.length - (n * 2)
+            base = base.substring(0, m) + "." + base.substring(m)
+            this.val = base
+        }
+        return this.val
+    }
 }
 
+const b = new Decimal("2")
+const a = new Decimal("5.310")
+console.log(a.power(b))
