@@ -2,12 +2,12 @@ class Decimal {
 	constructor(val) {
 		this.val = typeof val === "string" ? val : val.toString();                      //sanitizing
 	}
-	get num() {                                                                         //get function to return as num
+	get num() {                                                                         //get function to return as number
 		return parseFloat(this.val);
 	}
     precision(num, round = true) {
         let [int, mant] = this.val.split(".");
-        let carry = 0
+        let carry = false
         if (mant.length === num) {
             return this.val
         }
@@ -36,7 +36,6 @@ class Decimal {
 		if (typeof num !== "string") {
 			num = num.toString();
 		}
-        console.log(num)
 		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
 			throw new Error("Parameter is not a float");
 		}
@@ -93,7 +92,7 @@ class Decimal {
 			mant1 = mant1 * m;
 		}
 		let mant = mant1 - mant2;
-		if (mant <= 0) {
+		if (mant < 0) {
 			mant = mant + n;
 			carry = 1;
 		}
@@ -143,29 +142,37 @@ class Decimal {
 		this.val = res;
 		return this.val;
 	}
-	divide(num, prec = 5) {
-        if (num instanceof Decimal) {
-            num = num.val
+	divide(divisor, prec = 5) {
+        if (divisor instanceof Decimal) {
+            divisor = divisor.val
         }
-		if (typeof num !== "string") {
-			num = num.toString();
+		if (typeof divisor !== "string") {
+			divisor = divisor.toString();
 		}
-		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
+		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(divisor)) {
 			throw new Error("Parameter is not a float");
 		}
 		if (this.val === "0") return "0";
-		if (num === "0") {
+		if (divisor === "0") {
 			throw new Error("Cannot divide by zero");
 		}
-        let n = num.length - num.indexOf(".") - 1
-        if (num.indexOf(".") === -1) n = 0
-        num = num.replace(".", "")
-        num = parseInt(num)
+        let n = divisor.length - divisor.indexOf(".") - 1
+        if (divisor.indexOf(".") === -1) n = 0
+        divisor = divisor.replace(".", "")
+        console.log(divisor, n)
         let dividend = this.val
+        if (dividend.length < dividend.indexOf(".") + n) {
+            console.log(true)
+        } else {
+            console.log(false)
+        }
+
+
+        divisor = parseInt(divisor)
         let m = dividend.length - dividend.indexOf(".")
         if (dividend.indexOf(".") === -1) dividend = 0
 
-        console.log(num, n)
+        // throw new Error("I don't work yet")
 	}
     power(exponent) {
         if (exponent instanceof Decimal) {
@@ -191,11 +198,29 @@ class Decimal {
             let m = base.length - (n * 2)
             base = base.substring(0, m) + "." + base.substring(m)
             this.val = base
+        } else {
+            exponent = exponent.toString()
+            [int, mant] = exponent.split(".")
+            int = parseInt(int)
+            let base = this.val
+            let n = base.length - base.indexOf(".") - 1
+            if (base.indexOf(".") === -1) n = 0
+            base = base.replace(".", "")
+            base = parseInt(base)
+            base = base ** int
+            base = base.toString()
+            let m = base.length - (n * 2)
+            base = base.substring(0, m) + "." + base.substring(m)
+            this.val = base
+            throw new Error("I only work for integers so far")
         }
         return this.val
     }
+    root(radical) {
+        throw new Error("I don't work yet")
+    }
 }
 
-const b = new Decimal("2")
-const a = new Decimal("5.310")
-console.log(a.power(b))
+const b = new Decimal("0.65")
+const a = new Decimal("9.6")
+console.log(a.divide(b))

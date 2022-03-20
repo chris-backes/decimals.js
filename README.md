@@ -52,9 +52,12 @@ Subtract takes one parameter: the number being subtracted from the Decimal objec
 ### Multiply(num)
 Multiply takes one parameter: the number being multipplied with the Decimal object. It returns the result of the operation and modifies the object.
 
-### Division
+### Division(divisor)
 Division currently does not work.
 
 ### Power(exponent)
-** Currently on handles integers **
+** Currently only handles integers **
 Power takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.
+
+### Root(radical)
+Root currently does not work.
