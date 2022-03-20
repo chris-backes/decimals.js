@@ -172,7 +172,7 @@ class Decimal {
         let m = dividend.length - dividend.indexOf(".")
         if (dividend.indexOf(".") === -1) dividend = 0
 
-        // throw new Error("I don't work yet")
+        throw new Error("I don't work yet")
 	}
     power(exponent) {
         if (exponent instanceof Decimal) {
