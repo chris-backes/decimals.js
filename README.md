@@ -39,17 +39,17 @@ All methods which involve a mathematical operation can take a string, number, or
 
 ### Precision(num, round = true)
 
-Precision() takes two parameters. The first is the length of the decimal value, and the second is a boolean (default true) which determines whether or not the last value is rounded. This can also add trailing zeros.
+Precision() takes two parameters. The first is the length of the decimal value, and the second is a boolean (default true) which determines whether or not the last value is rounded. This can also add trailing zeros, but those zeros will be removed during any of the operations.
 
-### Add(num)
+### Add(addend)
 ** Currently cannot handle negative values **
 Add takes one parameter: the number being added to the Decimal object. It returns the result of the operation and modifies the object.
 
-### Subtract(num)
+### Subtract(subtrahend)
 ** Currently cannot handle negative values **
 Subtract takes one parameter: the number being subtracted from the Decimal object. It returns the result of the operation and modifies the object.
 
-### Multiply(num)
+### Multiply(multiplier)
 Multiply takes one parameter: the number being multipplied with the Decimal object. It returns the result of the operation and modifies the object.
 
 ### Division(divisor)
