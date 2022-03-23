@@ -2,6 +2,19 @@ class Decimal {
 	constructor(val) {
 		this.val = typeof val === "string" ? val : val.toString(); //sanitizing
 	}
+	static cleanse(num) {
+		if (num instanceof Decimal) {
+			//allows access to other decimal object
+			num = num.val;
+		}
+		if (typeof num !== "string") {
+			num = num.toString();
+		}
+		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
+			throw new Error("Parameter is not a float");
+		}
+		return num;
+	}
 	get num() {
 		//get function to return as number
 		return parseFloat(this.val);
@@ -15,7 +28,7 @@ class Decimal {
 		//gets length of the num, minus deimal point and sign
 		let carry = 0;
 		if (this.val.includes("-")) carry++;
-		if (this.val.includes("-")) carry++;
+		if (this.val.includes(".")) carry++;
 		return this.val.length - carry;
 	}
 	get length() {
@@ -46,29 +59,20 @@ class Decimal {
 		this.val = int + "." + mant;
 		return this.val;
 	}
-	add(addend) {
+	//Static prop allows dual syntax of Decimal.addition("1.5", "2.3") and let a = new Decimal("1.5") / a.add("2.3")
+	static addition(addend, addendum) {
 		// data cleansing
-		if (addend instanceof Decimal) {
-			//allows access to other decimal object
-			addend = addend.val;
-		}
-		if (typeof addend !== "string") {
-			addend = addend.toString();
-		}
-		if (
-			!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(addend)
-		) {
-			throw new Error("Parameter is not a float");
-		}
-		while (this.val.charAt(this.val.length - 1) === "0") {
-			this.val = this.val.substring(0, this.val.length - 1);
-		}
+		addendum = Decimal.cleanse(addendum);
+		addend = Decimal.cleanse(addend);
 		while (addend.charAt(addend.length - 1) === "0") {
 			addend = addend.substring(0, addend.length - 1);
 		}
+		while (addendum.charAt(addendum.length - 1) === "0") {
+			addendum = addendum.substring(0, addendum.length - 1);
+		}
 		// separating out the numbers into the integer and decimal values
-		let [int1, mant1] = this.val.split(".");
-		let [int2, mant2] = addend.split(".");
+		let [int1, mant1] = addend.split(".");
+		let [int2, mant2] = addendum.split(".");
 
 		// the length values get used in two different ways
 		let x = mant1.length;
@@ -77,7 +81,7 @@ class Decimal {
 		let p = x > y ? x : y;
 		let n = 10 ** p;
 		let m = 10 ** Math.abs(x - y);
-		// we need to append the sign after getting the length vals, else p will be wrong
+		// // we need to append the sign after getting the length vals, else p will be wrong
 		if (int1.charAt(0) === "-") mant1 = "-" + mant1;
 		if (int2.charAt(0) === "-") mant2 = "-" + mant2;
 		// x and y get used to correct for longer or shorter decimals
@@ -95,45 +99,53 @@ class Decimal {
 			mant = mant - n;
 			carry = 1;
 		}
-		//if both are negative
-		if (Math.abs(mant) >= n && int1.charAt(0) === "-" && int2.charAt(0) === "-") {
+		//if both are negative all of this should be redundant with the rewrite
+		let special = "blank";
+		if (
+			Math.abs(mant) >= n &&
+			int1.charAt(0) === "-" &&
+			int2.charAt(0) === "-"
+		) {
 			mant = mant + n;
-			carry = -1
+			carry = -1;
 		} else if ((int1.charAt(0) === "-" || int2.charAt(0) === "-") && mant) {
 			// TO DO: solve the issue of one being negative and one being positive
+			let addendumNum = parseInt(addendum);
+			let addendNum = parseInt(addend);
+			if (Math.abs(addendumNum) === Math.abs(addendNum)) {
+				special = "0";
+			} else if (Math.abs(addendumNum) > Math.abs(addendNum)) {
+				special = Decimal.methodNegPosi();
+			} else {
+				special = Decimal.methodNegPosi();
+			}
 		}
 
-		mant = mant.toString().substring(1)
+		mant = Math.abs(mant).toString();
 		// adding leading zeros to decimal
 		while (mant.length < p) {
 			mant = "0".concat(mant);
 		}
 
-		this.val =
+		let res =
 			(parseInt(int1) + parseInt(int2) + carry).toString() + "." + mant;
+		addend = special === "blank" ? res : special;
+		return addend;
+	}
+	add(num) {
+		this.val = Decimal.addition(this.val, num);
 		return this.val;
 	}
-	subtract(subtrahend) {
-		if (subtrahend instanceof Decimal) {
-			subtrahend = subtrahend.val;
-		}
-		if (typeof subtrahend !== "string") {
-			subtrahend = subtrahend.toString();
-		}
-		if (
-			!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(
-				subtrahend
-			)
-		) {
-			throw new Error("Parameter is not a float");
-		}
-		while (this.val.charAt(this.val.length - 1) === "0") {
-			this.val = this.val.substring(0, this.val.length - 1);
+	static subtraction (minued, subtrahend) {
+		subtrahend = Decimal.cleanse(subtrahend);
+		minued = Decimal.cleanse(minued)
+		while (minued.charAt(minued.length - 1) === "0") {
+			minued = minued.substring(0, minued.length - 1);
 		}
 		while (subtrahend.charAt(subtrahend.length - 1) === "0") {
 			subtrahend = subtrahend.substring(0, subtrahend.length - 1);
 		}
-		let [int1, mant1] = this.val.split(".");
+		let [int1, mant1] = minued.split(".");
 		let [int2, mant2] = subtrahend.split(".");
 		let x = mant1.length;
 		let y = mant2.length;
@@ -160,54 +172,42 @@ class Decimal {
 			mant = mant + nPow;
 			carry = -1;
 		}
-		mant = mant.toString()
+		mant = Math.abs(mant).toString();
 		while (mant.length < n) {
 			mant = "0".concat(mant);
 		}
-		this.val =
-			(parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant;
-		return this.val;
+		return (parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant;
 	}
-	multiply(multiplier) {
+	subtract(num) {
+		this.val = Decimal.subtraction(this.val, num)
+		return this.val
+	}
+	static multiplication(multiplicand, multiplier) {
 		let neg = false;
-		if (multiplier instanceof Decimal) {
-			multiplier = multiplier.val;
-		}
-		if (typeof multiplier !== "string") {
-			//sanitizing data
-			multiplier = multiplier.toString();
-		}
-		if (this.val.charAt(0) === "-") {
+		multiplier = Decimal.cleanse(multiplier);
+		multiplicand = Decimal.cleanse(multiplicand);
+		if (multiplicand.charAt(0) === "-") {
 			neg = !neg;
-			this.val = this.val.substring(1);
+			multiplicand = multiplicand.substring(1);
 		}
 		if (multiplier.charAt(0) === "-") {
 			neg = !neg;
 			multiplier = multiplier.substring(1);
 		}
-		if (this.val === "0") return "0";
+		if (multiplicand === "0") return "0";
 		if (multiplier === "0") {
-			this.val = 0;
-			return this.val;
+			return 0
 		}
-		if (
-			!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(
-				multiplier
-			)
-		) {
-			//error handler
-			throw new Error("Parameter is not a float");
-		}
-		while (this.val.charAt(this.val.length - 1) === "0") {
-			this.val = this.val.substring(0, this.val.length - 1);
+		while (multiplicand.charAt(multiplicand.length - 1) === "0") {
+			multiplicand = multiplicand.substring(0, multiplicand.length - 1);
 		}
 		while (multiplier.charAt(multiplier.length - 1) === "0") {
 			multiplier = multiplier.substring(0, multiplier.length - 1);
 		}
-		const first = parseInt(this.val.split(".").join(""));
+		const first = parseInt(multiplicand.split(".").join(""));
 		const second = parseInt(multiplier.split(".").join(""));
 		const prod = (first * second).toString();
-		const x = this.val.split(".")[1]?.length ?? 0;
+		const x = multiplicand.split(".")[1]?.length ?? 0;
 		const y = multiplier.split(".")[1]?.length ?? 0;
 		const deci = prod.length - (x + y);
 		let res = prod.slice(0, deci) + "." + prod.slice(deci);
@@ -215,10 +215,16 @@ class Decimal {
 			res = res.substring(0, res.length - 1);
 		}
 		if (neg) res = "-" + res;
-		this.val = res;
-		return this.val;
+		return res
 	}
-	// divide(divisor, prec = 5) {
+	multiply(num) {
+		this.val = Decimal.multiplication(this.val, num)
+		return this.val
+	}
+	// divide(divisor, prec = 10) {
+	//	if (typeof prec !== "number") {
+	// 		prec = 10
+	// 	}
 	// 	if (divisor instanceof Decimal) {
 	// 		divisor = divisor.val;
 	// 	}
@@ -228,7 +234,7 @@ class Decimal {
 	// 	if (
 	// 		!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(divisor)
 	// 	) {
-	// 		throw new Error("Parameter is not a float");
+	// 		throw Decimal.errorFloat;
 	// 	}
 	// 	while (this.val.charAt(this.val.length - 1) === "0") {
 	// 		this.val = this.val.substring(0, this.val.length - 1)
@@ -265,7 +271,7 @@ class Decimal {
 			if (
 				!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)
 			) {
-				throw new Error("Parameter is not a float");
+				throw Decimal.errorFloat;
 			}
 			exponent = parseInt(exponent);
 		}
@@ -305,6 +311,35 @@ class Decimal {
 	// }
 }
 
-const b = new Decimal("-0.43");
-const a = new Decimal("-4.63");
-console.log(a.add(b));
+Object.defineProperties(Decimal, {
+	sqrt2: {
+		value: "1.41421356237",
+		writable: false,
+		enumerable: false,
+		configurable: false,
+	},
+	sqrt3: {
+		value: "1.73205080757",
+		writable: false,
+		enumerable: false,
+		configurable: false,
+	},
+	sqrt5: {
+		value: "2.2360679775",
+		writable: false,
+		enumerable: false,
+		configurable: false,
+	},
+	sqrt7: {
+		value: "2.64575131106",
+		writable: false,
+		enumerable: false,
+		configurable: false,
+	},
+});
+
+const b = new Decimal("-3.45");
+const a = new Decimal("4.97");
+
+console.log(b.subtract(a));
+console.log(Decimal.addition("-0.43", "-4.97"));
