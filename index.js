@@ -2,19 +2,6 @@ class Decimal {
 	constructor(val) {
 		this.val = typeof val === "string" ? val : val.toString(); //sanitizing
 	}
-	static cleanse(num) {
-		if (num instanceof Decimal) {
-			//allows access to other decimal object
-			num = num.val;
-		}
-		if (typeof num !== "string") {
-			num = num.toString();
-		}
-		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
-			throw new Error("Parameter is not a float");
-		}
-		return num;
-	}
 	get num() {
 		//get function to return as number
 		return parseFloat(this.val);
@@ -34,6 +21,37 @@ class Decimal {
 	get length() {
 		// gets length of the string
 		return this.val.length;
+	}
+	//Each method accepts Decimal objects, strings, or numbers. This cleanses the inputs and returns them as strings. Used by all computational methods, either directly (other static methods) or indirectly (the inherited methods).
+	static cleanseStr(num) {
+		if (num instanceof Decimal) {
+			//allows access to other decimal object
+			num = num.val;
+		}
+		if (typeof num !== "string") {
+			num = num.toString();
+		}
+		if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
+			throw new Error("Parameter is not a float");
+		}
+		while (num.charAt(num.length - 1) === "0") {
+			num = num.substring(0, num.length - 1);
+		}
+		return num;
+	}
+	static cleanseNum(num) {
+		if (num instanceof Decimal) {
+			return num.num
+		} else if (typeof num === "string") {
+			if (!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(num)) {
+				throw new Error("Parameter is not a float");
+			}
+			return parseFloat(num);
+		} else if (typeof "number") {
+			return num
+		} else {
+			throw new Error("Parameter is not a float");
+		}
 	}
 	precision(num, round = true) {
 		let [int, mant] = this.val.split(".");
@@ -59,11 +77,20 @@ class Decimal {
 		this.val = int + "." + mant;
 		return this.val;
 	}
-	//Static prop allows dual syntax of Decimal.addition("1.5", "2.3") and let a = new Decimal("1.5") / a.add("2.3")
+	//Static method allows dual syntax of Decimal.addition("1.5", "2.3") and let a = new Decimal("1.5") / a.add("2.3")\
+	//Static methods are called by the class
+	static equality(first, second) {
+		first = Decimal.cleanseNum(first)
+		second = Decimal.cleanseNum(second)
+		return first === second
+	}
+	isEqual(compare) {
+		return this.num === Decimal.cleanseNum(compare)
+	}
 	static addition(addend, addendum) {
 		// data cleansing
-		addendum = Decimal.cleanse(addendum);
-		addend = Decimal.cleanse(addend);
+		addendum = Decimal.cleanseStr(addendum);
+		addend = Decimal.cleanseStr(addend);
 		while (addend.charAt(addend.length - 1) === "0") {
 			addend = addend.substring(0, addend.length - 1);
 		}
@@ -132,13 +159,14 @@ class Decimal {
 		addend = special === "blank" ? res : special;
 		return addend;
 	}
+	//Ordinary methods are called from the instances of the class
 	add(num) {
 		this.val = Decimal.addition(this.val, num);
 		return this.val;
 	}
-	static subtraction (minued, subtrahend) {
-		subtrahend = Decimal.cleanse(subtrahend);
-		minued = Decimal.cleanse(minued)
+	static subtraction(minued, subtrahend) {
+		subtrahend = Decimal.cleanseStr(subtrahend);
+		minued = Decimal.cleanseStr(minued);
 		while (minued.charAt(minued.length - 1) === "0") {
 			minued = minued.substring(0, minued.length - 1);
 		}
@@ -176,16 +204,19 @@ class Decimal {
 		while (mant.length < n) {
 			mant = "0".concat(mant);
 		}
-		return (parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant;
+		return (
+			(parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant
+		);
 	}
 	subtract(num) {
-		this.val = Decimal.subtraction(this.val, num)
-		return this.val
+		this.val = Decimal.subtraction(this.val, num);
+		return this.val;
 	}
-	static multiplication(multiplicand, multiplier) {
+	//Being phased out, other method being tested
+	static multiplicationDEPRECATED(multiplicand, multiplier) {
 		let neg = false;
-		multiplier = Decimal.cleanse(multiplier);
-		multiplicand = Decimal.cleanse(multiplicand);
+		multiplier = Decimal.cleanseStr(multiplier);
+		multiplicand = Decimal.cleanseStr(multiplicand);
 		if (multiplicand.charAt(0) === "-") {
 			neg = !neg;
 			multiplicand = multiplicand.substring(1);
@@ -194,10 +225,8 @@ class Decimal {
 			neg = !neg;
 			multiplier = multiplier.substring(1);
 		}
-		if (multiplicand === "0") return "0";
-		if (multiplier === "0") {
-			return 0
-		}
+		if (multiplicand === "0" || multiplier === "0") return "0";
+
 		while (multiplicand.charAt(multiplicand.length - 1) === "0") {
 			multiplicand = multiplicand.substring(0, multiplicand.length - 1);
 		}
@@ -215,54 +244,111 @@ class Decimal {
 			res = res.substring(0, res.length - 1);
 		}
 		if (neg) res = "-" + res;
+		return res;
+	}
+	//attempts to implemnet a method which can handle larger numbers
+	static multiplication(multiplicand, multiplier) {
+		let neg = false;
+		multiplier = Decimal.cleanseStr(multiplier);
+		multiplicand = Decimal.cleanseStr(multiplicand);
+		if (multiplicand.charAt(0) === "-") {
+			neg = !neg;
+			multiplicand = multiplicand.substring(1);
+		}
+		if (multiplier.charAt(0) === "-") {
+			neg = !neg;
+			multiplier = multiplier.substring(1);
+		}
+		if (multiplicand === "0") return "0";
+		if (multiplier === "0") return "0;"
+		while (multiplicand.charAt(multiplicand.length - 1) === "0") {
+			multiplicand = multiplicand.substring(0, multiplicand.length - 1);
+		}
+		while (multiplier.charAt(multiplier.length - 1) === "0") {
+			multiplier = multiplier.substring(0, multiplier.length - 1);
+		}
+		const x = multiplicand.split(".")[1]?.length ?? 0;
+		const y = multiplier.split(".")[1]?.length ?? 0;
+		const deci = x + y;
+
+		let first = multiplicand.replace(".", "").split("").map(a => parseInt(a)).reverse()
+		let second = multiplier.replace(".", "").split("").map(a => parseInt(a)).reverse()
+		let res = [0]
+		for (let i = 0; i < second.length; i++) {
+			for (let j = 0; j < first.length; j++) {
+				let prod = second[i] * first[j]
+				if (res[i + j] !== undefined) {
+					res[i + j] = res[i + j] + prod
+				} else {
+					res.push(prod)
+				}
+			}
+		}
+		let carry = 0
+		for (let i = 0; i < res.length; i++) {
+			let curr = res[i] + carry
+			carry = Math.floor(curr / 10)
+			res[i] = (curr) % 10
+		}
+		while (res[res.length - 1] === 0) {
+			res.pop()
+		}
+		if (carry !== 0) {
+			res.push(carry)
+		}
+		res = res.reverse().join("")
+		let n = res.length - deci
+		if (n >= 0) res = res.substring(0, n) + "." + res.substring(n)
+		if (res.charAt(res.length - 1) === ".") res = res.substring(0, res.length - 1)
+		if (neg) res = "-" + res;
 		return res
 	}
 	multiply(num) {
-		this.val = Decimal.multiplication(this.val, num)
-		return this.val
+		this.val = Decimal.multiplication(this.val, num);
+		return this.val;
 	}
-	// divide(divisor, prec = 10) {
-	//	if (typeof prec !== "number") {
-	// 		prec = 10
-	// 	}
-	// 	if (divisor instanceof Decimal) {
-	// 		divisor = divisor.val;
-	// 	}
-	// 	if (typeof divisor !== "string") {
-	// 		divisor = divisor.toString();
-	// 	}
-	// 	if (
-	// 		!/[+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*)(?:[eE][+-]?\d+)?/.test(divisor)
-	// 	) {
-	// 		throw Decimal.errorFloat;
-	// 	}
-	// 	while (this.val.charAt(this.val.length - 1) === "0") {
-	// 		this.val = this.val.substring(0, this.val.length - 1)
-	// 	}
-	// 	while (divisor.charAt(divisor.length - 1) === "0") {
-	// 		divisor = divisor.substring(0, divisor.length - 1)
-	// 	}
-	// 	if (this.val === "0") return "0";
-	// 	if (divisor === "0") {
-	// 		throw new Error("Cannot divide by zero");
-	// 	}
-	// 	let n = divisor.length - divisor.indexOf(".") - 1;
-	// 	if (divisor.indexOf(".") === -1) n = 0;
-	// 	divisor = divisor.replace(".", "");
-	// 	console.log(divisor, n);
-	// 	let dividend = this.val;
-	// 	if (dividend.length < dividend.indexOf(".") + n) {
-	// 		console.log(true);
-	// 	} else {
-	// 		console.log(false);
-	// 	}
+	static division(dividend, divisor, prec = 10, round = true) {
+		if (typeof prec !== "number") {
+			prec = 10;
+		}
+		if (prec > 20) {
+			prec = 20;
+		}
+		let neg = false;
+		let proxy = Decimal.cleanseNum(dividend) / Decimal.cleanseNum(divisor)
+		proxy = proxy.toString().indexOf(".")
+		dividend = Decimal.cleanseStr(dividend);
+		divisor = Decimal.cleanseStr(divisor);
+		if (dividend === "0") return "0";
+		if (divisor === "0") {
+			throw new Error("Cannot divide by zero");
+		}
+		let n = divisor.length - divisor.indexOf(".") - 1;
+		let m = dividend.length - dividend.indexOf(".") - 1;
+		let decimalPointer = n - m
+		if (dividend.indexOf(".") === -1) m = 0;
+		if (divisor.indexOf(".") === -1) n = 0;
+		divisor = divisor.replace(".", "");
+		dividend = dividend.replace(".", "");
+		while (n > m) {
+			dividend = dividend + "0";
+			m++;
+		}
+		while (m > n) {
+			divisor = divisor = "0";
+			n++;
+		}
+		divisor = parseInt(divisor);
+		dividend = parseInt(dividend);
 
-	// 	divisor = parseInt(divisor);
-	// 	let m = dividend.length - dividend.indexOf(".");
-	// 	if (dividend.indexOf(".") === -1) dividend = 0;
+		let res = 0;
+		while (dividend >= divisor) {
+			dividend -= divisor;
+			res++;
+		}
 
-	// 	throw new Error("I don't work yet");
-	// }
+		throw new Error("I don't work yet");
+	}
 	power(exponent) {
 		if (exponent instanceof Decimal) {
 			exponent = exponent.num;
@@ -290,25 +376,23 @@ class Decimal {
 			base = base.substring(0, m) + "." + base.substring(m);
 			this.val = base;
 		} else {
-			exponent = exponent.toString()[(int, mant)] = exponent.split(".");
-			int = parseInt(int);
-			let base = this.val;
-			let n = base.length - base.indexOf(".") - 1;
-			if (base.indexOf(".") === -1) n = 0;
-			base = base.replace(".", "");
-			base = parseInt(base);
-			base = base ** int;
-			base = base.toString();
-			let m = base.length - n * 2;
-			base = base.substring(0, m) + "." + base.substring(m);
-			this.val = base;
+			// exponent = exponent.toString()[(int, mant)] = exponent.split(".");
+			// int = parseInt(int);
+			// let base = this.val;
+			// let n = base.length - base.indexOf(".") - 1;
+			// if (base.indexOf(".") === -1) n = 0;
+			// base = base.replace(".", "");
+			// base = parseInt(base);
+			// base = base ** int;
+			// base = base.toString();
+			// let m = base.length - n * 2;
+			// base = base.substring(0, m) + "." + base.substring(m);
+			// this.val = base;
 			throw new Error("I only work for integers so far");
 		}
 		return this.val;
 	}
-	// root(radical) {
-	// 	throw new Error("I don't work yet");
-	// }
+
 }
 
 Object.defineProperties(Decimal, {
@@ -338,8 +422,7 @@ Object.defineProperties(Decimal, {
 	},
 });
 
-const b = new Decimal("-3.45");
-const a = new Decimal("4.97");
+const b = new Decimal("4.979");
+const a = new Decimal("-0.438");
 
-console.log(b.subtract(a));
-console.log(Decimal.addition("-0.43", "-4.97"));
+console.log(Decimal.multiplication("432", "67"));
