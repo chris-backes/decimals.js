@@ -9,9 +9,7 @@ console.log(0.1 + 0.2)
 ```
 This attempts to overcome that difficulty.
 
-The project is still incomplete, and is not as good as other libraries which handle the task (https://www.npmjs.com/package/js-big-decimal).
-
-There is no illusion that this will ever be superior; it is just a side project of mine.
+Other libraries perform similar tasks. this library is small, to handle the most basic of tasks. It has two different methodologies: calling a new instance of the Decimal object allows the user to store changes to the value after the operation, whereas calling the static Decimal methods do not change any variables.
 
 ## Usage
 
@@ -59,19 +57,11 @@ Those methods which have both will list the method used on the new instance and 
 Precision takes two parameters. The first is the length of the decimal value, and the second is a boolean (default true) which determines whether or not the last value is rounded. This can also add trailing zeros, but those zeros will be removed during any of the operations.
 
 ### add(addend) / addition(addend, addendum) 
-<<<<<<< HEAD
-=======
-** Currently cannot handle negative values **
->>>>>>> f50a7c96b1e04cec2bc7249f408f9302eaa00ea2
 Add takes one parameter: the number being added to the Decimal object. It returns the result of the operation and modifies the object.
 
 Addition takes two parameters: the numbers to be added.
 
 ### subtract(subtrahend) / subtraction(minued, subtrahend)
-<<<<<<< HEAD
-=======
-** Currently cannot handle negative values **
->>>>>>> f50a7c96b1e04cec2bc7249f408f9302eaa00ea2
 Subtract takes one parameter: the number being subtracted from the Decimal object. It returns the result of the operation and modifies the object.
 
 Subtaction takes two variables: the latter is subtracted from the former.
@@ -80,7 +70,6 @@ Subtaction takes two variables: the latter is subtracted from the former.
 Multiply takes one parameter: the number being multipplied with the Decimal object. It returns the result of the operation and modifies the object.
 
 Multiplication takes two paramters: the numbers to be multiplied with one another.
-<<<<<<< HEAD
 
 ### divide(divisor, precision = 10, round = true) / division(dividend, divisor, precision = 10, round = true)
 Divide takes 3 parameters:
@@ -96,15 +85,3 @@ Division takes the addition parameter of the dividend, the number to be divided
 Exponentiate takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.
 
 Exponentiation takes the base in addition to the exponent.
-=======
-
-### divide(divisor, precision = 10, round = true) / division(dividend, divisor, precision = 10, round = true)
-Division currently does not work.
-
-### power(exponent)
-** Currently only handles integers **
-Power takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.
-
-### root(radical)
-Root currently does not work.
->>>>>>> f50a7c96b1e04cec2bc7249f408f9302eaa00ea2
