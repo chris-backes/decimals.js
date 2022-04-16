@@ -1,0 +1,25 @@
+{
+  "name": "decimals.js",
+  "version": "1.0.0",
+  "description": "For handling floating point numbers in JavaScript without losing precision",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chris-backes/js-deci.git"
+  },
+  "keywords": [
+    "decimals",
+    "floating",
+    "floats",
+    "floating-point"
+  ],
+  "author": "Chris Backes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chris-backes/js-deci/issues"
+  },
+  "homepage": "https://github.com/chris-backes/js-deci#readme"
+}
