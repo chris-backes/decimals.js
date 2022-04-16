@@ -1,5 +1,5 @@
 {
-  "name": "decimals.js",
+  "name": "js-decimals",
   "version": "1.0.0",
   "description": "For handling floating point numbers in JavaScript without losing precision",
   "main": "index.js",
@@ -19,7 +19,7 @@
   "author": "Chris Backes",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chris-backes/js-deci/issues"
+    "url": "https://github.com/chris-backes/js-decimals/issues"
   },
-  "homepage": "https://github.com/chris-backes/js-deci#readme"
+  "homepage": "https://github.com/chris-backes/js-decimals#readme"
 }
