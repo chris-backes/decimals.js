@@ -25,6 +25,7 @@ function cleanseStr(num) {
 }
 /**
  *
+ * @throws Error if string is not a float
  * @param {*} num
  * @returns {number}
  */
