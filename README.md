@@ -1,4 +1,4 @@
-# Decimals Library
+# js-decimals
 
 This repo is for handling floating point decimals in JavaScript while maintaining accuracy.
 
@@ -11,7 +11,9 @@ console.log(0.1 + 0.2)
 
 This attempts to overcome that difficulty.
 
-Other libraries perform similar tasks. this library is small, to handle the most basic of tasks. It has two different methodologies: calling a new instance of the Decimal object allows the user to store changes to the value after the operation, whereas calling the static Decimal methods do not change any variables.
+Other libraries perform similar tasks. This library is small, to handle the most basic of tasks. It has two different methodologies: calling a new instance of the Decimal object allows the user to store changes to the value after the operation, whereas calling the static Decimal methods do not change any variables.
+
+***PLEASE NOTE*** This library is currently unergoing unit testing for edge cases. It ought not to be used in production environments. Anyone wishing to test may reach out to me.
 
 ## Usage
 
@@ -112,8 +114,12 @@ Division takes the addition parameter of the dividend, the number to be divided
 
 ### exponentiate(exponent) / exponentiation(base, exponent)
 
-** Currently only handles postive integers **
+***Currently only handles postive integers***
 
 Exponentiate takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.
 
 Exponentiation takes the base in addition to the exponent.
+
+## Contact
+- Email: christopher.backes@gmail.com
+- GitHub: https://github.com/chris-backes
