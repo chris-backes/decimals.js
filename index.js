@@ -43,12 +43,19 @@ function cleanseNum(num) {
 		throw new Error("Parameter is not a float");
 	}
 }
+/**
+ * chops zeros off of the decimal place
+ * @param {string} val 
+ * @returns {string}
+ */
 function chopZeros(val) {
-	while (val.charAt(val.length - 1) === "0") {
-		val = val.substring(0, val.length - 1);
+	if (val.indexOf(".") !== -1) {
+		while (val.charAt(val.length - 1) === "0") {
+			val = val.substring(0, val.length - 1);
+		}
+		if (val.charAt(val.length - 1) === ".")
+			val = val.substring(0, val.length - 1);
 	}
-	if (val.charAt(val.length - 1) === ".")
-		val = val.substring(0, val.length - 1);
 	return val;
 }
 
@@ -58,6 +65,8 @@ function chopZeros(val) {
  */
 class Decimal {
 	constructor(val) {
+		//error handling for the input
+		val = cleanseStr(val)
 		this.val = typeof val === "string" ? val : val.toString(); //sanitizing
 	}
 	get num() {
@@ -197,6 +206,7 @@ class Decimal {
 		let res =
 			(parseInt(int1) + parseInt(int2) + carry).toString() + "." + mant;
 		addend = special === "blank" ? res : special;
+		addend = chopZeros(addend)
 		return addend;
 	}
 	//Ordinary methods are called from the instances of the class
@@ -244,9 +254,8 @@ class Decimal {
 		while (mant.length < n) {
 			mant = "0".concat(mant);
 		}
-		return (
-			(parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant
-		);
+		let res = (parseInt(int1) - parseInt(int2) + carry).toString() + "." + mant
+		return chopZeros(res)
 	}
 	subtract(num) {
 		this.val = Decimal.subtraction(this.val, num);
@@ -319,6 +328,7 @@ class Decimal {
 		if (res.charAt(res.length - 1) === ".")
 			res = res.substring(0, res.length - 1);
 		if (neg) res = "-" + res;
+		res = chopZeros(res)
 		return res;
 	}
 	multiply(num) {
@@ -412,6 +422,7 @@ class Decimal {
 				res = res.substring(0, res.length - 1) + temp.toString();
 			}
 		}
+		res = chopZeros(res)
 		return res;
 	}
 	divide(divisor, precision, round) {
@@ -438,5 +449,12 @@ class Decimal {
 		return this.val;
 	}
 }
+
+const a = new Decimal("0.123")
+const b = new Decimal("000.3456")
+
+a.add(b)
+console.log(a)
+console.log(b)
 
 module.exports = Decimal
