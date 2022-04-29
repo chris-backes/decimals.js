@@ -17,7 +17,12 @@ Other libraries perform similar tasks. This library is small, to handle the most
 
 ## Usage
 
-All Decimal objects store a value as a string, accessed with .val, and can be accessed as a number with a get function number(). To create a Decimal object, one must call new Decimal() with a string or a number:
+Accessing the object:
+```js
+const Decimal = require('js-decimals')
+```
+
+All Decimal objects store a value as a string, accessed with .val, and can be accessed as a number with a get function num(). To create a Decimal object, one must call `new Decimal()` with a string or a number:
 
 ```js
 const abc = new Decimal("16.377654");
