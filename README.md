@@ -13,7 +13,7 @@ This attempts to overcome that difficulty.
 
 Other libraries perform similar tasks. This library is small, to handle the most basic of tasks. It has two different methodologies: calling a new instance of the Decimal object allows the user to store changes to the value after the operation, whereas calling the static Decimal methods do not change any variables.
 
-***PLEASE NOTE*** This library is currently unergoing unit testing for edge cases. It ought not to be used in production environments. Anyone wishing to test may reach out to me.
+***PLEASE NOTE*** This library is currently undergoing unit testing for edge cases. It ought not to be used in production environments. Anyone wishing to test may reach out to me.
 
 ## Usage
 
@@ -86,7 +86,7 @@ Precision takes two parameters. The first is the length of the decimal value, an
 
 IsEqual takes one parameter: the number being compared to the Decimal object. It returns a boolean.
 
-Eqaulity takes two parameters: the two numbers being compared.
+Equality takes two parameters: the two numbers being compared.
 
 ### add(addend) / addition(addend, addendum) 
 
@@ -98,13 +98,13 @@ Addition takes two parameters: the numbers to be added.
 
 Subtract takes one parameter: the number being subtracted from the Decimal object. It returns the result of the operation and modifies the object.
 
-Subtaction takes two variables: the latter is subtracted from the former.
+Subtraction takes two variables: the latter is subtracted from the former.
 
 ### multiply(multiplier) / multiplication(multiplicand, multiplier)
 
-Multiply takes one parameter: the number being multipplied with the Decimal object. It returns the result of the operation and modifies the object.
+Multiply takes one parameter: the number being multiplied with the Decimal object. It returns the result of the operation and modifies the object.
 
-Multiplication takes two paramters: the numbers to be multiplied with one another.
+Multiplication takes two parameters: the numbers to be multiplied with one another.
 
 ### divide(divisor, precision = 10, round = true) / division(dividend, divisor, precision = 10, round = true)
 
@@ -119,7 +119,7 @@ Division takes the addition parameter of the dividend, the number to be divided
 
 ### exponentiate(exponent) / exponentiation(base, exponent)
 
-***Currently only handles postive integers***
+***Currently only handles positive integers***
 
 Exponentiate takes one parameter: the value representing the power to which the value of the Decimal object is to be raised. It returns the result of the operation and modifies the object.
 
