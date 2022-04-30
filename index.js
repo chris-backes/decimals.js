@@ -433,7 +433,7 @@ class Decimal {
     let res = base;
     if (exponent === 0) return 1;
     if (exponent % 1 === 0 && exponent > 0) {
-      binary = exponent.toString(2);
+      let binary = exponent.toString(2);
       for (let i = 1; i < binary.length; i++) {
         res = res * res;
         if (binary.charAt(i) === "1") res = res * base;
@@ -448,5 +448,8 @@ class Decimal {
     return this.val;
   }
 }
+
+let a = new Decimal("1.25")
+console.log(a.exponentiate(3).val)
 
 module.exports = Decimal;
