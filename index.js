@@ -430,10 +430,10 @@ class Decimal {
   static exponentiation(base, exponent) {
     base = cleanseNum(base);
     exponent = cleanseNum(exponent);
-    binary = exponent.toString(2);
     let res = base;
     if (exponent === 0) return 1;
     if (exponent % 1 === 0 && exponent > 0) {
+      binary = exponent.toString(2);
       for (let i = 1; i < binary.length; i++) {
         res = res * res;
         if (binary.charAt(i) === "1") res = res * base;
@@ -448,12 +448,5 @@ class Decimal {
     return this.val;
   }
 }
-
-const a = new Decimal("0.123");
-const b = new Decimal("000.3456");
-
-a.add(b);
-console.log(a);
-console.log(b);
 
 module.exports = Decimal;
