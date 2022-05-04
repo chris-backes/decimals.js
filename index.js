@@ -449,7 +449,4 @@ class Decimal {
   }
 }
 
-let a = new Decimal("1.25")
-console.log(a.exponentiate(3).val)
-
 module.exports = Decimal;

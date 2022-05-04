@@ -1,2 +1,5 @@
 node_modules
 __tests__
+test.js
+benchmark.js
+index.min.cdn.js

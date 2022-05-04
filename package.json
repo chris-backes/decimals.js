@@ -1,6 +1,6 @@
 {
   "name": "js-decimals",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "For handling floating point numbers in JavaScript without losing precision",
   "main": "index.js",
   "scripts": {
@@ -17,13 +17,17 @@
     "floating-point"
   ],
   "author": "Chris Backes christopher.backes@gmail.com https://github.com/chris-backes",
-  "contributors": ["Mary Braunger martjezek@aol.com https://github.com/Maryjezek"],
+  "contributors": [
+    "Mary Braunger martjezek@aol.com https://github.com/Maryjezek"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/chris-backes/js-decimals/issues"
   },
   "homepage": "https://github.com/chris-backes/js-decimals#readme",
   "devDependencies": {
-    "jest": "^27.5.1"
+    "benchmark": "^2.1.4",
+    "jest": "^27.5.1",
+    "microtime": "^3.0.0"
   }
 }
