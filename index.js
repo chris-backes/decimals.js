@@ -342,7 +342,7 @@ class Decimal {
    * @returns {string}
    * [Called by divide method]{@link Decimal#divide}
    */
-  static division(dividend, divisor, prec = 10, round = true) {
+  static division(dividend, divisor, prec = 4, round = true) {
     if (typeof prec !== "number") {
       prec = 10;
     }

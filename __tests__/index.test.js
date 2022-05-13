@@ -53,9 +53,9 @@ test("checks for division", () => {
   const a = new Decimal("0.123");
   const b = new Decimal("000.3456");
 
-  expect(a.divide(b)).toBe("0.3559027778"); //this works
+  expect(a.divide(b)).toBe("0.3559"); //this works
 
-  //expect(b.divide(a)).toBe("2.8097561"); //does not work
+  expect(b.divide(a)).toBe("0.9711"); //does not work
 
-  //expect(Decimal.division(a, b)).toBe("2.8097561"); //does not work
+  expect(Decimal.division(a, b)).toBe("0.3559"); //does not work
 });
