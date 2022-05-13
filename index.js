@@ -525,9 +525,15 @@ class Decimal {
 // console.log(Decimal.modulo("25", "7"));
 // console.log(Decimal.modulo("8.75", ".5"));
 
-console.log(Decimal.adde("6E5", "5")); //addition
-console.log(Decimal.addeSci("6E5", "5"));
-console.log(Decimal.adde(".1", ".2"));
-console.log(Decimal.addition(".1", ".2"));
+//console.log(Decimal.adde("6E5", "5")); //addition
+//console.log(Decimal.addeSci("6E5", "5"));
+//console.log(Decimal.adde(".1", ".2"));
+//console.log(Decimal.addition(".1", ".2"));
 console.log(Decimal.multiplication(".1", ".2"));
+
+let a = new Decimal(".1");
+console.log(a.multiply(".2"))
+
+
+
 module.exports = Decimal;
