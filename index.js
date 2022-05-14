@@ -323,6 +323,13 @@ class Decimal {
     res = res.reverse().join("");
     let n = res.length - deci;
     if (n >= 0) res = res.substring(0, n) + "." + res.substring(n);
+    if (n < 0) {
+			while (n < 0) {
+				res = "0" + res
+				n++
+			}
+			res = "0." + res
+		}
     if (res.charAt(res.length - 1) === ".")
       res = res.substring(0, res.length - 1);
     if (neg) res = "-" + res;

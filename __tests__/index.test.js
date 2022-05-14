@@ -40,11 +40,11 @@ test("checks for multiplication", () => {
   const a = new Decimal("0.123");
   const b = new Decimal("000.3456");
 
-  expect(a.multiply(b)).toBeCloseTo("0.0425"); //does not work
+  expect(a.multiply(b)).toBe("0.0425088"); 
 
-  expect(b.multiply(a)).toBeCloseTo("0.0425"); //does not work
+  expect(b.multiply(a)).toBe("0.0146907648"); 
 
-  expect(Decimal.multiplication(a, b)).toBeCloseTo("0.0425"); //does not work
+  expect(Decimal.multiplication(a, b)).toBe("0.00062444252"); 
 });
 
 //mb added test for division
@@ -53,9 +53,9 @@ test("checks for division", () => {
   const a = new Decimal("0.123");
   const b = new Decimal("000.3456");
 
-  expect(a.divide(b)).toBe("0.3559"); //this works
+  expect(a.divide(b)).toBe("0.3559"); 
 
-  expect(b.divide(a)).toBe("0.9711"); //does not work
+  expect(b.divide(a)).toBe("0.9711"); 
 
-  expect(Decimal.division(a, b)).toBe("0.3559"); //does not work
+  expect(Decimal.division(a, b)).toBe("0.3665"); 
 });
