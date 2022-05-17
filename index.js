@@ -323,6 +323,13 @@ class Decimal {
     res = res.reverse().join("");
     let n = res.length - deci;
     if (n >= 0) res = res.substring(0, n) + "." + res.substring(n);
+    if (n < 0) {
+			while (n < 0) {
+				res = "0" + res
+				n++
+			}
+			res = "0." + res
+		}
     if (res.charAt(res.length - 1) === ".")
       res = res.substring(0, res.length - 1);
     if (neg) res = "-" + res;
@@ -342,7 +349,7 @@ class Decimal {
    * @returns {string}
    * [Called by divide method]{@link Decimal#divide}
    */
-  static division(dividend, divisor, prec = 10, round = true) {
+  static division(dividend, divisor, prec = 4, round = true) {
     if (typeof prec !== "number") {
       prec = 10;
     }
@@ -447,6 +454,93 @@ class Decimal {
     this.val = Decimal.exponentiation(this.val, exponent);
     return this.val;
   }
+
+  //mb modulo in exponentiation
+ 
+  static solveModulo(base, exponent, modulo) {
+    base = cleanseNum(base);
+    exponent = cleanseNum(exponent);
+    modulo = cleanseNum(modulo);
+    let res = base;
+    if (exponent === 0) return 1;
+    if (exponent % 1 === 0 && exponent > 0) {
+      let binary = exponent.toString(2);
+      for (let i = 1; i < binary.length; i++) {
+        res = res * res;
+        if (binary.charAt(i) === "1") res = res * base;
+        res = res % modulo;
+      }
+    } else {
+      throw new Error("I only work for positive integers so far");
+    }
+    return res;
+  }
+
+  //mb- modulo function without exponentiation
+  static modulo(base, modulo) {
+    base = cleanseNum(base);
+    modulo = cleanseNum(modulo);
+    let res = base;
+    if (modulo === 0) return 0;
+    //if (modulo % 1 === 0 && modulo > 0) {
+    if (modulo > 0) {
+      while (res >= modulo) {
+        res = res - modulo;
+      }
+    } else {
+      throw new Error("I only work for positive integers so far");
+    }
+    return res;
+  }
+
+  //mb - addition function using numbers containing scientific notation
+  static adde(num1, num2) {
+    num1 = cleanseNum(num1);
+    num2 = cleanseNum(num2);
+    let res = num1 + num2;
+    return res;
+  }
+
+  //mb- addition function using numbers containing scientific notation and return the result in scientific notation
+  static addeSci(num1, num2) {
+    num1 = cleanseNum(num1);
+    num2 = cleanseNum(num2);
+    let res = num1 + num2;
+    let resSci = res.toString();
+    if (resSci.indexOf("e") !== -1) {
+      resSci = resSci.split("e");
+      resSci = resSci[0] + "e" + (parseInt(resSci[1]) + 1);
+    } else {
+      resSci = resSci + "e1";
+    }
+    return resSci;
+  }
 }
+
+//let a = new Decimal("1.25");
+//console.log(a.exponentiate(3).val)
+
+//console.log(a)
+
+
+
+// console.log(Decimal.solveModulo("5", "2", "3"));
+// console.log(Decimal.solveModulo("14", "105", "5"));
+// console.log(Decimal.solveModulo("23", "373", "747"));
+// console.log(Decimal.solveModulo(".5", "2", "1"));
+// console.log(Decimal.modulo("5", "2"));
+// console.log(Decimal.modulo("25", "7"));
+// console.log(Decimal.modulo("8.75", ".5"));
+
+//console.log(Decimal.adde("6E5", "5")); //addition
+//console.log(Decimal.addeSci("6E5", "5"));
+//console.log(Decimal.adde(".1", ".2"));
+//console.log(Decimal.addition(".1", ".2"));
+console.log(Decimal.multiplication(".1", ".2"));
+
+let a = new Decimal(".1");
+console.log(a.multiply(".2"))
+
+
 
 module.exports = Decimal;
